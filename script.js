@@ -1,13 +1,13 @@
-// script.js — Opens Gmail compose with a prefilled appeal on SEND
+// script.js — Gmail integration + auto color change
 (function () {
   const colors = [
     '#ff073a', '#1e90ff', '#32cd32', '#800080',
     '#ffd700', '#ff8c00', '#00ced1', '#ff1493',
     '#adff2f', '#00ffff', '#ff4500', '#9370db'
   ];
-  const color = colors[Math.floor(Math.random() * colors.length)];
+  let colorIndex = 0;
 
-  // prompt messages (matches your <select> options)
+  // prompt messages
   const promptMessages = {
     '1': 'I believe my account was banned by mistake. Please review and restore access to my account.',
     '2': 'My account was mistakenly banned. I did not violate any policies. Kindly unblock my account after review.',
@@ -17,52 +17,37 @@
     '6': 'This is a final appeal request for account reinstatement. Please review and consider unbanning.'
   };
 
-  // WhatsApp support recipient (official replies come from @support.whatsapp.com).
-  // You can change this to support@whatsapp.com or another address if you prefer.
-  const SUPPORT_EMAIL = 'support@support.whatsapp.com';
+  const SUPPORT_EMAIL = 'android@support.whatsapp.com';
 
-  // Apply theme & small UI tweaks on DOM ready
+  // apply initial color
   document.addEventListener('DOMContentLoaded', () => {
-    document.body.style.backgroundColor = color;
+    applyColor(colors[colorIndex]);
+
+    // auto-change color every 4 seconds
+    setInterval(() => {
+      colorIndex = (colorIndex + 1) % colors.length;
+      applyColor(colors[colorIndex]);
+    }, 4000);
 
     const sendBtn = document.getElementById('sendBtn');
-    const visit = document.getElementById('visitCurrent');
-    const banner = document.getElementById('banner');
 
-    if (sendBtn) {
-      sendBtn.style.boxShadow = `0 6px 30px ${hexToRgba(color, 0.18)}`;
-      sendBtn.style.borderColor = `rgba(255,255,255,0.06)`;
-    }
-    if (visit) {
-      visit.style.borderColor = hexToRgba(color, 0.35);
-      visit.style.boxShadow = `0 8px 30px ${hexToRgba(color, 0.12)}`;
-      visit.style.background = 'rgba(255,255,255,0.035)';
-    }
-    if (banner) {
-      banner.style.boxShadow = 'inset 0 -40px 120px rgba(0,0,0,0.25)';
-    }
-
-    // Send button behavior: open Gmail compose with prefilled appeal
     if (sendBtn) {
       sendBtn.addEventListener('click', function () {
-        const phoneInput = (document.getElementById('phone') || {});
+        const phoneInput = document.getElementById('phone');
         const phone = (phoneInput.value || '').trim();
         if (!phone) {
           flash(sendBtn, 'ENTER PHONE NUMBER');
           return;
         }
 
-        // determine ban type (radio inputs)
         const banRadio = document.querySelector('input[name="ban"]:checked');
         const banType = banRadio ? banRadio.value : 'normal';
         const banLabel = banType === 'permanent' ? 'Permanent Ban' : 'Normal Ban';
 
-        // prompt select
         const promptSelect = document.getElementById('prompt');
         const promptValue = promptSelect ? promptSelect.value : '1';
         const promptText = promptMessages[promptValue] || promptMessages['1'];
 
-        // build subject & body
         const subject = `Appeal: Request to unban WhatsApp account — ${phone}`;
         const bodyLines = [
           "Hello WhatsApp Support,",
@@ -83,28 +68,45 @@
 
         flash(sendBtn, 'OPENING GMAIL...');
 
-        // Gmail compose URL (opens Gmail in new tab with prefilled to, subject, body)
         const gmailUrl = 'https://mail.google.com/mail/?view=cm&fs=1'
           + '&to=' + encodeURIComponent(SUPPORT_EMAIL)
           + '&su=' + encodeURIComponent(subject)
           + '&body=' + encodeURIComponent(body);
 
-        // Try to open Gmail in a new tab; if popup blocked, fallback to mailto:
         const opened = window.open(gmailUrl, '_blank');
         if (!opened) {
-          // Fallback mailto (opens default mail client)
           const mailto = `mailto:${encodeURIComponent(SUPPORT_EMAIL)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-          // Use location.href so popup blockers won't stop it
           window.location.href = mailto;
         }
       });
     }
   });
 
-  // helper functions
+  // function to apply color theme
+  function applyColor(color) {
+    document.body.style.backgroundColor = color;
+    const sendBtn = document.getElementById('sendBtn');
+    const visit = document.getElementById('visitCurrent');
+    const banner = document.getElementById('banner');
+
+    if (sendBtn) {
+      sendBtn.style.boxShadow = `0 6px 30px ${hexToRgba(color, 0.18)}`;
+      sendBtn.style.borderColor = `rgba(255,255,255,0.06)`;
+    }
+    if (visit) {
+      visit.style.borderColor = hexToRgba(color, 0.35);
+      visit.style.boxShadow = `0 8px 30px ${hexToRgba(color, 0.12)}`;
+      visit.style.background = 'rgba(255,255,255,0.035)';
+    }
+    if (banner) {
+      banner.style.boxShadow = 'inset 0 -40px 120px rgba(0,0,0,0.25)';
+    }
+  }
+
+  // helper: hex to rgba
   function hexToRgba(hex, alpha) {
     hex = hex.replace('#', '');
-    if (hex.length === 3) hex = hex.split('').map((h) => h + h).join('');
+    if (hex.length === 3) hex = hex.split('').map(h => h+h).join('');
     const bigint = parseInt(hex, 16);
     const r = (bigint >> 16) & 255;
     const g = (bigint >> 8) & 255;
@@ -112,6 +114,7 @@
     return `rgba(${r},${g},${b},${alpha})`;
   }
 
+  // flash temporary text
   function flash(el, text) {
     const prev = el.textContent;
     el.textContent = text;
