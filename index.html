@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WhatsApp Unbend Tool</title>
+  <style>
+    :root {
+      --accent: #ffffff;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; font-family: "Segoe UI", Roboto, Arial, sans-serif; display: flex; justify-content: center; align-items: center; background: #111; color: var(--accent); padding: 20px; transition: background-color .6s ease; }
+    .wrap { width: 100%; max-width: 760px; background: rgba(0,0,0,0.5); border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.04); box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
+    .site-head { padding:16px 20px; display:flex; justify-content:space-between; background: rgba(0,0,0,0.6); border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .title{ font-weight:800; letter-spacing:0.5px; font-size:18px; }
+    .sub{ font-size:12px; opacity:.95; }
+    .card{ padding:24px; display:flex; flex-direction:column; gap:16px; align-items:center; }
+    .big-title{ font-size:20px; font-weight:800; letter-spacing:0.6px; margin:6px 0 10px 0; }
+    .controls{ width:100%; display:flex; flex-direction:column; gap:16px; align-items:center; }
+    .row{ width:100%; display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+    .column-center{ flex-direction:column; align-items:center; }
+    .radio-group{ display:inline-flex; gap:12px; align-items:center; background: rgba(255,255,255,0.06); padding:8px; border-radius:8px; font-weight:600; font-size:13px; }
+    .radio{ display:inline-flex; align-items:center; gap:6px; }
+    input[type="tel"]{ width:320px; max-width:100%; padding:12px 14px; border-radius:8px; border:1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.03); color: var(--accent); font-size:15px; outline:none; }
+    select.prompt{ padding:12px; border-radius:8px; border:1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.03); color: var(--accent); font-weight:700; font-size:14px; min-width:260px; max-width:100%; }
+    .btn-send{ margin-top:6px; padding:12px 18px; border-radius:10px; border:1px solid rgba(255,255,255,0.08); cursor:pointer; font-weight:800; font-size:15px; letter-spacing:0.6px; background: rgba(255,255,255,0.08); color: var(--accent); transition: transform .12s ease, box-shadow .12s ease; box-shadow:0 6px 20px rgba(0,0,0,0.4); }
+    .btn-send:active{ transform: translateY(1px); }
+    .visit-box{ width:220px; padding:10px 12px; border-radius:8px; text-align:center; font-weight:800; border:2px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04); margin-top:12px; }
+    .link-join{ display:inline-flex; gap:10px; align-items:center; margin-top:8px; text-decoration:none; color:inherit; font-weight:800; padding:9px 12px; background: rgba(255,255,255,0.03); border-radius:8px; border:1px solid rgba(255,255,255,0.06); }
+    .banner{ width:100%; height:140px; display:flex; align-items:center; justify-content:center; background: rgba(255,255,255,0.02); color: rgba(255,255,255,0.9); font-weight:700; font-size:14px; border-top:1px solid rgba(255,255,255,0.05); border-bottom:1px solid rgba(255,255,255,0.05); margin-top:10px; }
+    .site-foot{ display:flex; gap:8px; align-items:center; justify-content:center; padding:12px 14px; font-size:13px; background: rgba(0,0,0,0.6); border-top:1px solid rgba(255,255,255,0.05); }
+    .sep{ opacity:.6; }
+    @media(max-width:480px){ .title{ font-size:16px; } .big-title{ font-size:18px; } input[type="tel"]{ width:100%; } select.prompt{ min-width:unset; } .banner{ height:110px; font-size:13px; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="site-head">
+      <div class="title">WHATSAPP UNBEND TOOL</div>
+      <div class="sub">YOU ARE UNBEND MASTER</div>
+    </header>
+
+    <main class="card">
+      <h1 class="big-title">WHATSAPP UNBEND TOOL</h1>
+      <div class="controls">
+        <div class="row">
+          <div class="radio-group">
+            <label class="radio"><input type="radio" name="ban" value="normal" checked> <span>Normal Ban</span></label>
+            <label class="radio"><input type="radio" name="ban" value="permanent"> <span>Permanent Ban</span></label>
+          </div>
+        </div>
+        <div class="row">
+          <input id="phone" type="tel" placeholder="ENTER NUMBER (e.g. 923XXXXXXXXX)" />
+        </div>
+        <div class="row">
+          <select id="prompt" class="prompt">
+            <option value="1">Standard Unban Request</option>
+            <option value="2">Mistaken Ban Appeal</option>
+            <option value="3">Policy Compliance Promise</option>
+            <option value="4">Account Review Request</option>
+            <option value="5">Terms Violation Appeal</option>
+            <option value="6">Final Chance Request</option>
+          </select>
+        </div>
+        <div class="row column-center">
+          <button id="sendBtn" class="btn-send">SEND UNBEND</button>
+          <div class="visit-box">Visit Current</div>
+          <a class="link-join" href="https://whatsapp.com/channel/0029Vb6HUGv0G0XmD5RKrA3G" target="_blank">❯_ JOIN WHATSAPP CHANNEL</a>
+        </div>
+      </div>
+    </main>
+
+    <div class="banner">[ BANNER SPACE ]</div>
+
+    <footer class="site-foot">
+      <div>Developed by Adeel Abbasi</div><div class="sep">|</div>
+      <div>© 2025 ALL SYSTEMS OPERATIONAL</div>
+    </footer>
+  </div>
+
+  <script>
+    (function(){
+      const colors = ['#ff073a','#1e90ff','#32cd32','#800080','#ffd700','#ff8c00','#00ced1','#ff1493','#adff2f','#00ffff','#ff4500','#9370db'];
+      let colorIndex=0;
+      const phoneInput = document.getElementById('phone');
+      const promptSelect = document.getElementById('prompt');
+      const sendBtn = document.getElementById('sendBtn');
+
+      function changeBgColor(){ document.body.style.backgroundColor = colors[colorIndex]; colorIndex=(colorIndex+1)%colors.length; }
+      setInterval(changeBgColor,4000);
+
+      const promptMessages={
+        '1': `Hello WhatsApp Support, I believe my account was mistakenly banned. Please review and restore access to my account. Phone: `,
+        '2': `Dear WhatsApp Team, my account appears to have been banned in error. I assure you that I have not violated any of your policies. Kindly unblock my account after review. Phone: `,
+        '3': `Hello Support, I understand the importance of WhatsApp's policies. I sincerely promise to comply with all rules and guidelines. Kindly review my account ban. Phone: `,
+        '4': `Respected WhatsApp Team, I request a detailed review of my account as I believe the ban was a misunderstanding. Please reinstate my account. Phone: `,
+        '5': `Hello WhatsApp Support, I think this ban happened due to a misinterpretation of the terms. Please review my account and unblock if no violation occurred. Phone: `,
+        '6': `Dear WhatsApp Team, this is a final appeal to request reinstatement of my banned account. I assure full compliance with WhatsApp's policies. Phone: `
+      };
+
+      sendBtn.addEventListener('click',function(){
+        const phone = (phoneInput.value||'').trim();
+        if(!phone){ alert('ENTER PHONE NUMBER'); return; }
+        const banType = document.querySelector('input[name="ban"]:checked').value;
+        const promptText = promptMessages[promptSelect.value] + phone + `. Regards, Adeel Abbasi. Ban Type: ${banType}`;
+        const subject = `Appeal: Request to unban WhatsApp account — ${phone}`;
+        const mailto = `mailto:android@support.whatsapp.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(promptText)}`;
+        window.location.href=mailto; // opens Gmail app on mobile
+      });
+    })();
+  </script>
+</body>
+</html>
