@@ -11,11 +11,11 @@
     * { box-sizing: border-box; }
     html, body { height: 100%; margin: 0; font-family: "Segoe UI", Roboto, Arial, sans-serif; display: flex; justify-content: center; align-items: center; background: #111; color: var(--accent); padding: 20px; transition: background-color .6s ease; }
     .wrap { width: 100%; max-width: 760px; background: rgba(0,0,0,0.5); border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.04); box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
-    .site-head { padding:16px 20px; display:flex; justify-content:space-between; background: rgba(0,0,0,0.6); border-bottom: 1px solid rgba(255,255,255,0.05); }
-    .title{ font-weight:800; letter-spacing:0.5px; font-size:18px; }
-    .sub{ font-size:12px; opacity:.95; }
+    .site-head { padding:20px; display:flex; justify-content:space-between; background: rgba(0,0,0,0.6); border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .title{ font-weight:800; letter-spacing:0.5px; font-size:18px; margin-top:10px; }
+    .sub{ font-size:12px; opacity:.95; margin-top:10px; }
     .card{ padding:24px; display:flex; flex-direction:column; gap:16px; align-items:center; }
-    .big-title{ font-size:20px; font-weight:800; letter-spacing:0.6px; margin:6px 0 10px 0; }
+    .big-title{ font-size:20px; font-weight:800; letter-spacing:0.6px; margin:14px 0 14px 0; }
     .controls{ width:100%; display:flex; flex-direction:column; gap:16px; align-items:center; }
     .row{ width:100%; display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
     .column-center{ flex-direction:column; align-items:center; }
@@ -26,11 +26,12 @@
     .btn-send{ margin-top:6px; padding:12px 18px; border-radius:10px; border:1px solid rgba(255,255,255,0.08); cursor:pointer; font-weight:800; font-size:15px; letter-spacing:0.6px; background: rgba(255,255,255,0.08); color: var(--accent); transition: transform .12s ease, box-shadow .12s ease; box-shadow:0 6px 20px rgba(0,0,0,0.4); }
     .btn-send:active{ transform: translateY(1px); }
     .visit-box{ width:220px; padding:10px 12px; border-radius:8px; text-align:center; font-weight:800; border:2px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04); margin-top:12px; }
+    .visit-box:hover{ background: rgba(255,255,255,0.1); }
     .link-join{ display:inline-flex; gap:10px; align-items:center; margin-top:8px; text-decoration:none; color:inherit; font-weight:800; padding:9px 12px; background: rgba(255,255,255,0.03); border-radius:8px; border:1px solid rgba(255,255,255,0.06); }
-    .banner{ width:100%; height:140px; display:flex; align-items:center; justify-content:center; background: rgba(255,255,255,0.02); color: rgba(255,255,255,0.9); font-weight:700; font-size:14px; border-top:1px solid rgba(255,255,255,0.05); border-bottom:1px solid rgba(255,255,255,0.05); margin-top:10px; }
+    .banner img{ width:100%; height:auto; display:block; }
     .site-foot{ display:flex; gap:8px; align-items:center; justify-content:center; padding:12px 14px; font-size:13px; background: rgba(0,0,0,0.6); border-top:1px solid rgba(255,255,255,0.05); }
     .sep{ opacity:.6; }
-    @media(max-width:480px){ .title{ font-size:16px; } .big-title{ font-size:18px; } input[type="tel"]{ width:100%; } select.prompt{ min-width:unset; } .banner{ height:110px; font-size:13px; } }
+    @media(max-width:480px){ .title{ font-size:16px; } .big-title{ font-size:18px; } input[type="tel"]{ width:100%; } select.prompt{ min-width:unset; } }
   </style>
 </head>
 <body>
@@ -64,17 +65,19 @@
         </div>
         <div class="row column-center">
           <button id="sendBtn" class="btn-send">SEND UNBEND</button>
-          <div class="visit-box">Visit Current</div>
+          <div id="visitBox" class="visit-box">Visit Current: <span id="visitCount">0</span></div>
           <a class="link-join" href="https://whatsapp.com/channel/0029Vb6HUGv0G0XmD5RKrA3G" target="_blank">❯_ JOIN WHATSAPP CHANNEL</a>
         </div>
       </div>
     </main>
 
-    <div class="banner">[ BANNER SPACE ]</div>
+    <div class="banner">
+      <img src="A_digital_graphic_design_banner_advertisement_feat.png" alt="Banner">
+    </div>
 
     <footer class="site-foot">
       <div>Developed by Adeel Abbasi</div><div class="sep">|</div>
-      <div>© 2025 ALL SYSTEMS OPERATIONAL</div>
+      <div>© 2025 THIS USE 100% FREE FOR YOU</div>
     </footer>
   </div>
 
@@ -105,9 +108,17 @@
         const promptText = promptMessages[promptSelect.value] + phone + `. Regards, Adeel Abbasi. Ban Type: ${banType}`;
         const subject = `Appeal: Request to unban WhatsApp account — ${phone}`;
         const mailto = `mailto:android@support.whatsapp.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(promptText)}`;
-        window.location.href=mailto; // opens Gmail app on mobile
+        window.location.href=mailto;
       });
+
+      // 🔥 visitor counter auto update
+      fetch('https://api.countapi.xyz/hit/whatsapp-unbend-tool/visits')
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById('visitCount').innerText = data.value;
+        });
+
     })();
   </script>
 </body>
-</html>
+                                                                </html>
