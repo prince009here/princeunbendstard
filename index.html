@@ -3,65 +3,125 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>WhatsApp Unbend Tool</title>
+  <title>WhatsApp Unbend Tool - Jarvis Edition</title>
   <style>
     :root {
-      --accent: #ffffff;
+      --accent: #00f7ff;
     }
-    * { box-sizing: border-box; }
-    html, body { 
-      height: 100%; 
-      margin: 0; 
-      font-family: "Segoe UI", Roboto, Arial, sans-serif; 
-      background: #111; 
-      color: var(--accent); 
-      padding: 20px; 
-      transition: background-color .6s ease; 
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      height: 100%;
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background: #000;
+      color: var(--accent);
+      overflow-x: hidden;
     }
-    .wrap { 
-      width: 100%; 
-      max-width: 760px; 
-      margin: auto; 
-      background: rgba(0,0,0,0.5); 
-      border-radius: 12px; 
-      overflow: hidden; 
-      border: 1px solid rgba(255,255,255,0.04); 
-      box-shadow: 0 10px 30px rgba(0,0,0,0.6); 
+    .wrap {
+      width: 100%;
+      max-width: 760px;
+      margin: 30px auto;
+      background: rgba(0,0,0,0.6);
+      border-radius: 16px;
+      border: 1px solid rgba(0,255,255,0.2);
+      box-shadow: 0 0 20px rgba(0,255,255,0.3);
+      overflow: hidden;
+      position: relative;
     }
-    .site-head { 
-      padding:20px; 
-      display:flex; 
-      justify-content:space-between; 
-      background: rgba(0,0,0,0.6); 
-      border-bottom: 1px solid rgba(255,255,255,0.05); 
+    .site-head {
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0,0,0,0.8);
+      border-bottom: 1px solid rgba(0,255,255,0.2);
     }
-    .title{ font-weight:800; letter-spacing:0.5px; font-size:18px; margin-top:10px; }
-    .sub{ font-size:12px; opacity:.95; margin-top:10px; }
-    .card{ padding:24px; display:flex; flex-direction:column; gap:16px; align-items:center; }
-    .big-title{ font-size:20px; font-weight:800; letter-spacing:0.6px; margin:14px 0 14px 0; }
-    .controls{ width:100%; display:flex; flex-direction:column; gap:16px; align-items:center; }
-    .row{ width:100%; display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
-    .column-center{ flex-direction:column; align-items:center; }
-    .radio-group{ display:inline-flex; gap:12px; align-items:center; background: rgba(255,255,255,0.06); padding:8px; border-radius:8px; font-weight:600; font-size:13px; }
-    .radio{ display:inline-flex; align-items:center; gap:6px; }
-    input[type="tel"]{ width:320px; max-width:100%; padding:12px 14px; border-radius:8px; border:1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.03); color: var(--accent); font-size:15px; outline:none; }
-    select.prompt{ padding:12px; border-radius:8px; border:1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.03); color: var(--accent); font-weight:700; font-size:14px; min-width:260px; max-width:100%; }
-    .btn-send{ margin-top:6px; padding:12px 18px; border-radius:10px; border:1px solid rgba(255,255,255,0.08); cursor:pointer; font-weight:800; font-size:15px; letter-spacing:0.6px; background: rgba(255,255,255,0.08); color: var(--accent); transition: transform .12s ease, box-shadow .12s ease; box-shadow:0 6px 20px rgba(0,0,0,0.4); }
-    .btn-send:active{ transform: translateY(1px); }
-    .visit-box{ width:220px; padding:10px 12px; border-radius:8px; text-align:center; font-weight:800; border:2px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04); margin-top:12px; }
-    .visit-box:hover{ background: rgba(255,255,255,0.1); }
-    .link-join{ display:inline-flex; gap:10px; align-items:center; margin-top:8px; text-decoration:none; color:inherit; font-weight:800; padding:9px 12px; background: rgba(255,255,255,0.03); border-radius:8px; border:1px solid rgba(255,255,255,0.06); }
-    .banner img{ width:100%; height:auto; display:block; }
-    .site-foot{ display:flex; gap:8px; align-items:center; justify-content:center; padding:12px 14px; font-size:13px; background: rgba(0,0,0,0.6); border-top:1px solid rgba(255,255,255,0.05); }
-    .sep{ opacity:.6; }
-    @media(max-width:480px){ .title{ font-size:16px; } .big-title{ font-size:18px; } input[type="tel"]{ width:100%; } select.prompt{ min-width:unset; } }
+    .title { font-weight: 800; font-size: 18px; letter-spacing: 1px; color: cyan; }
+    .sub { font-size: 12px; opacity: .85; }
+
+    .mute-btn {
+      cursor: pointer;
+      font-size: 14px;
+      padding: 6px 12px;
+      border: 1px solid cyan;
+      border-radius: 20px;
+      background: rgba(0,255,255,0.1);
+      transition: 0.3s;
+    }
+    .mute-btn:hover { background: rgba(0,255,255,0.3); }
+
+    .card { padding: 24px; display: flex; flex-direction: column; gap: 16px; align-items: center; }
+    .big-title { font-size: 22px; font-weight: 800; text-shadow: 0 0 10px cyan; }
+    .controls { width: 100%; display: flex; flex-direction: column; gap: 16px; align-items: center; }
+    .row { width: 100%; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+    .radio-group { display: inline-flex; gap: 12px; align-items: center; background: rgba(0,255,255,0.08); padding: 8px; border-radius: 8px; }
+    .radio { display: inline-flex; align-items: center; gap: 6px; }
+    input[type="tel"], select.prompt {
+      width: 320px; max-width: 100%;
+      padding: 12px 14px;
+      border-radius: 8px;
+      border: 1px solid rgba(0,255,255,0.3);
+      background: rgba(0,255,255,0.06);
+      color: cyan;
+      font-size: 15px;
+      outline: none;
+    }
+    .btn-send {
+      padding: 12px 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 800;
+      font-size: 15px;
+      background: rgba(0,255,255,0.1);
+      border: 1px solid rgba(0,255,255,0.3);
+      color: cyan;
+      box-shadow: 0 0 12px rgba(0,255,255,0.4);
+      transition: transform .12s ease, background .3s;
+    }
+    .btn-send:hover { background: rgba(0,255,255,0.3); }
+    .btn-send:active { transform: translateY(1px); }
+    .visit-box {
+      width: 220px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: 800;
+      border: 2px solid rgba(0,255,255,0.3);
+      background: rgba(0,255,255,0.08);
+    }
+    .link-join {
+      display: inline-flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: 12px;
+      text-decoration: none;
+      color: cyan;
+      font-weight: 800;
+      padding: 10px 14px;
+      background: rgba(0,255,255,0.08);
+      border-radius: 10px;
+      border: 1px solid rgba(0,255,255,0.3);
+      box-shadow: 0 0 10px rgba(0,255,255,0.3);
+      transition: 0.3s;
+    }
+    .link-join:hover { background: rgba(0,255,255,0.3); }
+
+    .site-foot {
+      text-align: center;
+      padding: 14px;
+      font-size: 13px;
+      border-top: 1px solid rgba(0,255,255,0.2);
+      background: rgba(0,0,0,0.8);
+    }
   </style>
 </head>
 <body>
   <div class="wrap">
     <header class="site-head">
-      <div class="title">WHATSAPP UNBEND TOOL</div>
-      <div class="sub">YOU ARE UNBEND MASTER</div>
+      <div>
+        <div class="title">WHATSAPP UNBEND TOOL</div>
+        <div class="sub">JARVIS SYSTEM ONLINE</div>
+      </div>
+      <button id="muteBtn" class="mute-btn">🔊 Sound On</button>
     </header>
 
     <main class="card">
@@ -69,8 +129,8 @@
       <div class="controls">
         <div class="row">
           <div class="radio-group">
-            <label class="radio"><input type="radio" name="ban" value="normal" checked> <span>Normal Ban</span></label>
-            <label class="radio"><input type="radio" name="ban" value="permanent"> <span>Permanent Ban</span></label>
+            <label class="radio"><input type="radio" name="ban" value="normal" checked> Normal Ban</label>
+            <label class="radio"><input type="radio" name="ban" value="permanent"> Permanent Ban</label>
           </div>
         </div>
         <div class="row">
@@ -89,65 +149,98 @@
         <div class="row column-center">
           <button id="sendBtn" class="btn-send">SEND UNBEND</button>
           <div id="visitBox" class="visit-box">Visit Current: <span id="visitCount">0</span></div>
-          <a class="link-join" href="https://whatsapp.com/channel/0029Vb6HUGv0G0XmD5RKrA3G" target="_blank">❯_ JOIN WHATSAPP CHANNEL</a>
+          <!-- ✅ WhatsApp Channel Link Added -->
+          <a class="link-join" href="https://whatsapp.com/channel/0029Vb6HUGv0G0XmD5RKrA3G" target="_blank">❯ JOIN WHATSAPP CHANNEL</a>
         </div>
       </div>
     </main>
 
-    <!-- ✅ UPDATED BANNER IMAGE -->
-    <div class="banner">
-      <img src="https://i.postimg.cc/MXh106wQ/file-00000000d68c61fd99a942bc45fd7de3.png" alt="Banner">
-    </div>
-
     <footer class="site-foot">
-      <div>Developed by Adeel Abbasi</div><div class="sep">|</div>
-      <div>© 2025 THIS USE 100% FREE FOR YOU</div>
+      <div>Developed by Adeel Abbasi | © 2025 Free for Everyone</div>
     </footer>
   </div>
 
   <script>
     (function(){
-      const colors = ['#ff073a','#1e90ff','#32cd32','#800080','#ffd700','#ff8c00','#00ced1','#ff1493','#adff2f','#00ffff','#ff4500','#9370db'];
+      // ---------- Background pulse ----------
+      const colors = ['#001f1f','#000000','#002b36','#001a1a','#000000'];
       let colorIndex=0;
-      const phoneInput = document.getElementById('phone');
-      const promptSelect = document.getElementById('prompt');
-      const sendBtn = document.getElementById('sendBtn');
-
       function changeBgColor(){ 
         document.body.style.backgroundColor = colors[colorIndex]; 
         colorIndex=(colorIndex+1)%colors.length; 
       }
-      setInterval(changeBgColor,4000);
+      setInterval(changeBgColor,5000);
 
+      // ---------- Prompts ----------
       const promptMessages={
-        '1': `Hello WhatsApp Support, I believe my account was mistakenly banned. Please review and restore access to my account. Phone: `,
-        '2': `Dear WhatsApp Team, my account appears to have been banned in error. I assure you that I have not violated any of your policies. Kindly unblock my account after review. Phone: `,
-        '3': `Hello Support, I understand the importance of WhatsApp's policies. I sincerely promise to comply with all rules and guidelines. Kindly review my account ban. Phone: `,
-        '4': `Respected WhatsApp Team, I request a detailed review of my account as I believe the ban was a misunderstanding. Please reinstate my account. Phone: `,
-        '5': `Hello WhatsApp Support, I think this ban happened due to a misinterpretation of the terms. Please review my account and unblock if no violation occurred. Phone: `,
-        '6': `Dear WhatsApp Team, this is a final appeal to request reinstatement of my banned account. I assure full compliance with WhatsApp's policies. Phone: `
+        '1': `Hello WhatsApp Support, I believe my account was mistakenly banned. Please review and restore access. Phone: `,
+        '2': `Dear WhatsApp Team, my account appears to have been banned in error. Kindly unblock my account. Phone: `,
+        '3': `Hello Support, I promise full compliance with all rules. Kindly review my account ban. Phone: `,
+        '4': `Respected WhatsApp Team, I request a detailed review as I believe the ban was a misunderstanding. Phone: `,
+        '5': `Hello WhatsApp Support, I think this ban happened due to misinterpretation. Kindly review my account. Phone: `,
+        '6': `Dear WhatsApp Team, this is a final appeal. I assure full compliance. Phone: `
       };
 
+      const phoneInput=document.getElementById('phone');
+      const promptSelect=document.getElementById('prompt');
+      const sendBtn=document.getElementById('sendBtn');
+
       sendBtn.addEventListener('click',function(){
-        const phone = (phoneInput.value||'').trim();
+        const phone=(phoneInput.value||'').trim();
         if(!phone){ alert('ENTER PHONE NUMBER'); return; }
-        const banType = document.querySelector('input[name="ban"]:checked').value;
-        const promptText = promptMessages[promptSelect.value] + phone + `. Regards, Adeel Abbasi. Ban Type: ${banType}`;
-        const subject = `Appeal: Request to unban WhatsApp account — ${phone}`;
-        const mailto = `mailto:android@support.whatsapp.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(promptText)}`;
+        const banType=document.querySelector('input[name="ban"]:checked').value;
+        const promptText=promptMessages[promptSelect.value] + phone + `. Regards, Adeel Abbasi. Ban Type: ${banType}`;
+        const subject=`Appeal: Request to unban WhatsApp account — ${phone}`;
+        const mailto=`mailto:android@support.whatsapp.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(promptText)}`;
         window.location.href=mailto;
       });
 
-      // 🔥 visitor counter auto update
+      // ---------- Visitor Counter ----------
       fetch('https://api.countapi.xyz/hit/whatsapp-unbend-tool/visits')
-        .then(res => res.json())
-        .then(data => {
-          document.getElementById('visitCount').innerText = data.value;
-        })
-        .catch(err => {
-          console.error("Counter error:", err);
-          document.getElementById('visitCount').innerText = "N/A";
-        });
+        .then(res=>res.json())
+        .then(data=>{ document.getElementById('visitCount').innerText=data.value; })
+        .catch(()=>{ document.getElementById('visitCount').innerText="N/A"; });
+
+      // ---------- Jarvis Voice ----------
+      const muteBtn=document.getElementById('muteBtn');
+      let isMuted = localStorage.getItem("jarvisMuted")==="true";
+
+      function speak(text){
+        if(isMuted) return;
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.voice = speechSynthesis.getVoices().find(v=>/David|UK English Male|Google UK English/.test(v.name)) || speechSynthesis.getVoices()[0];
+        utter.rate=1; utter.pitch=1; utter.volume=1;
+        speechSynthesis.speak(utter);
+      }
+
+      // Welcome line
+      window.addEventListener("load", ()=> {
+        setTimeout(()=> speak("Welcome Master, system is online."), 1000);
+      });
+
+      // Auto speak every 7–10 sec
+      const jarvisLines=[
+        "System check complete. All protocols are active.",
+        "Awaiting your command.",
+        "Security protocols are stable.",
+        "Connection stable. Monitoring in progress.",
+        "Master, all systems are operational."
+      ];
+      setInterval(()=>{
+        const line=jarvisLines[Math.floor(Math.random()*jarvisLines.length)];
+        speak(line);
+      }, 7000 + Math.random()*3000);
+
+      // Mute toggle
+      function updateMuteBtn(){
+        muteBtn.textContent = isMuted ? "🔇 Sound Off" : "🔊 Sound On";
+      }
+      muteBtn.addEventListener("click", ()=>{
+        isMuted=!isMuted;
+        localStorage.setItem("jarvisMuted", isMuted);
+        updateMuteBtn();
+      });
+      updateMuteBtn();
 
     })();
   </script>
