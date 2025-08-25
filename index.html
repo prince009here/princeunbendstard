@@ -3,246 +3,380 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>WhatsApp Unbend Tool - Jarvis Edition</title>
+  <title>Jarvis Appeal Console — WhatsApp</title>
+  <meta name="description" content="Generate professional WhatsApp appeal prompts (Normal & Permanent bans) with Jarvis-style UI and animations. Includes Jarvis-style voice lines (welcome + periodic status lines)." />
   <style>
-    :root {
-      --accent: #00f7ff;
+    :root{
+      --bg:#0b0f14; 
+      --panel: rgba(255,255,255,0.05);
+      --panel-2: rgba(255,255,255,0.08);
+      --hud: #00e5ff;
+      --hud-soft: rgba(0,229,255,0.2);
+      --text: #e8f6ff;
+      --muted: rgba(232,246,255,0.6);
+      --error: #ff5c7a;
+      --ok: #5cffc6;
+      --ring: rgba(0,229,255,0.35);
+      --shadow: 0 12px 40px rgba(0,0,0,.55);
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      height: 100%;
-      font-family: "Segoe UI", Roboto, Arial, sans-serif;
-      background: #000;
-      color: var(--accent);
-      overflow-x: hidden;
-    }
-    .wrap {
-      width: 100%;
-      max-width: 760px;
-      margin: 30px auto;
-      background: rgba(0,0,0,0.6);
-      border-radius: 16px;
-      border: 1px solid rgba(0,255,255,0.2);
-      box-shadow: 0 0 20px rgba(0,255,255,0.3);
-      overflow: hidden;
-      position: relative;
-    }
-    .site-head {
-      padding: 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: rgba(0,0,0,0.8);
-      border-bottom: 1px solid rgba(0,255,255,0.2);
-    }
-    .title { font-weight: 800; font-size: 18px; letter-spacing: 1px; color: cyan; }
-    .sub { font-size: 12px; opacity: .85; }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);}
 
-    .mute-btn {
-      cursor: pointer;
-      font-size: 14px;
-      padding: 6px 12px;
-      border: 1px solid cyan;
-      border-radius: 20px;
-      background: rgba(0,255,255,0.1);
-      transition: 0.3s;
-    }
-    .mute-btn:hover { background: rgba(0,255,255,0.3); }
+    /* Subtle animated grid background */
+    .grid-bg{position:fixed;inset:0;pointer-events:none;background:
+      linear-gradient(transparent 0 96%, rgba(255,255,255,.04) 96% 100%),
+      linear-gradient(90deg, transparent 0 96%, rgba(255,255,255,.04) 96% 100%);
+      background-size:40px 40px,40px 40px;
+      animation:grid-pan 22s linear infinite;opacity:.5;}
+    @keyframes grid-pan{from{background-position:0 0,0 0}to{background-position:600px 300px,300px 600px}}
 
-    .card { padding: 24px; display: flex; flex-direction: column; gap: 16px; align-items: center; }
-    .big-title { font-size: 22px; font-weight: 800; text-shadow: 0 0 10px cyan; }
-    .controls { width: 100%; display: flex; flex-direction: column; gap: 16px; align-items: center; }
-    .row { width: 100%; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
-    .radio-group { display: inline-flex; gap: 12px; align-items: center; background: rgba(0,255,255,0.08); padding: 8px; border-radius: 8px; }
-    .radio { display: inline-flex; align-items: center; gap: 6px; }
-    input[type="tel"], select.prompt {
-      width: 320px; max-width: 100%;
-      padding: 12px 14px;
-      border-radius: 8px;
-      border: 1px solid rgba(0,255,255,0.3);
-      background: rgba(0,255,255,0.06);
-      color: cyan;
-      font-size: 15px;
-      outline: none;
-    }
-    .btn-send {
-      padding: 12px 18px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-weight: 800;
-      font-size: 15px;
-      background: rgba(0,255,255,0.1);
-      border: 1px solid rgba(0,255,255,0.3);
-      color: cyan;
-      box-shadow: 0 0 12px rgba(0,255,255,0.4);
-      transition: transform .12s ease, background .3s;
-    }
-    .btn-send:hover { background: rgba(0,255,255,0.3); }
-    .btn-send:active { transform: translateY(1px); }
-    .visit-box {
-      width: 220px;
-      padding: 10px 12px;
-      border-radius: 8px;
-      text-align: center;
-      font-weight: 800;
-      border: 2px solid rgba(0,255,255,0.3);
-      background: rgba(0,255,255,0.08);
-    }
-    .link-join {
-      display: inline-flex;
-      gap: 10px;
-      align-items: center;
-      margin-top: 12px;
-      text-decoration: none;
-      color: cyan;
-      font-weight: 800;
-      padding: 10px 14px;
-      background: rgba(0,255,255,0.08);
-      border-radius: 10px;
-      border: 1px solid rgba(0,255,255,0.3);
-      box-shadow: 0 0 10px rgba(0,255,255,0.3);
-      transition: 0.3s;
-    }
-    .link-join:hover { background: rgba(0,255,255,0.3); }
+    /* Particle canvas */
+    #sparks{position:fixed;inset:0;pointer-events:none;opacity:.6;}
 
-    .site-foot {
-      text-align: center;
-      padding: 14px;
-      font-size: 13px;
-      border-top: 1px solid rgba(0,255,255,0.2);
-      background: rgba(0,0,0,0.8);
+    .wrap{width:100%;max-width:900px;margin:40px auto;padding:0 16px}
+
+    .hud{
+      border:1px solid var(--ring);border-radius:18px;box-shadow:var(--shadow);
+      background:linear-gradient(180deg, rgba(0,229,255,.07), rgba(0,229,255,.03));
+      overflow:hidden;position:relative;
+    }
+
+    .site-head{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--ring);backdrop-filter: blur(6px);}
+    .brand{display:flex;gap:12px;align-items:center}
+    .ring{width:36px;height:36px;border-radius:50%;border:2px solid var(--hud);box-shadow:0 0 18px var(--hud-soft) inset,0 0 20px var(--hud-soft); position:relative}
+    .ring::after{content:'';position:absolute;inset:6px;border:2px solid var(--hud);border-radius:50%;opacity:.5;}
+    .title{font-weight:800;letter-spacing:.6px}
+    .sub{font-size:12px;opacity:.8}
+
+    .hero{padding:22px 16px;display:grid;gap:10px;grid-template-columns:1fr;justify-items:center;text-align:center}
+    .status{font-size:13px;color:var(--muted);letter-spacing:.3px}
+    .big{font-size:28px;font-weight:900;letter-spacing:1px;text-shadow:0 0 12px rgba(0,229,255,.35)}
+    .type{min-height:24px}
+
+    .panel{margin:12px 16px;padding:16px;border-top:1px solid var(--ring);background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02));}
+    .controls{display:grid;grid-template-columns:1fr;gap:14px}
+
+    .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center}
+    .radio-group{display:inline-flex;gap:12px;align-items:center;background:var(--panel);padding:8px;border-radius:12px;font-weight:700}
+    .radio{display:inline-flex;gap:6px;align-items:center}
+
+    input[type="tel"], select, textarea{width:min(720px,100%);padding:12px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:var(--text);font-size:15px;outline:none}
+    textarea{min-height:160px;resize:vertical}
+
+    .btn{padding:12px 18px;border-radius:12px;border:1px solid var(--ring);background:rgba(0,229,255,.1);color:var(--text);font-weight:900;letter-spacing:.6px;cursor:pointer;transition:transform .12s ease, box-shadow .12s ease;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+    .btn:active{transform:translateY(1px)}
+    .btn-ghost{background:rgba(255,255,255,.05)}
+
+    .stack{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+
+    .how{display:grid;gap:10px;margin-top:6px}
+    .how h3{margin:0;font-size:18px}
+    .how p{margin:0;color:var(--muted)}
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:10px}
+    .card{padding:14px;border:1px solid var(--ring);border-radius:14px;background:rgba(255,255,255,.04)}
+
+    .site-foot{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;padding:12px 14px;border-top:1px solid var(--ring);font-size:13px;color:var(--muted)}
+    .chip{display:inline-flex;gap:8px;align-items:center;padding:8px 12px;border-radius:999px;border:1px solid var(--ring);background:rgba(255,255,255,.04);font-weight:700}
+
+    @media (prefers-reduced-motion: reduce){
+      .grid-bg{animation:none}
     }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <header class="site-head">
-      <div>
-        <div class="title">WHATSAPP UNBEND TOOL</div>
-        <div class="sub">JARVIS SYSTEM ONLINE</div>
-      </div>
-      <button id="muteBtn" class="mute-btn">🔊 Sound On</button>
-    </header>
+  <!-- Animated Background Layers -->
+  <div class="grid-bg"></div>
+  <canvas id="sparks"></canvas>
 
-    <main class="card">
-      <h1 class="big-title">WHATSAPP UNBEND TOOL</h1>
-      <div class="controls">
-        <div class="row">
-          <div class="radio-group">
-            <label class="radio"><input type="radio" name="ban" value="normal" checked> Normal Ban</label>
-            <label class="radio"><input type="radio" name="ban" value="permanent"> Permanent Ban</label>
+  <div class="wrap">
+    <div class="hud">
+      <header class="site-head">
+        <div class="brand">
+          <div class="ring" aria-hidden="true"></div>
+          <div>
+            <div class="title">JARVIS APPEAL CONSOLE</div>
+            <div class="sub">WhatsApp Unban Assistant</div>
           </div>
         </div>
-        <div class="row">
-          <input id="phone" type="tel" placeholder="ENTER NUMBER (e.g. 923XXXXXXXXX)" />
-        </div>
-        <div class="row">
-          <select id="prompt" class="prompt">
-            <option value="1">Standard Unban Request</option>
-            <option value="2">Mistaken Ban Appeal</option>
-            <option value="3">Policy Compliance Promise</option>
-            <option value="4">Account Review Request</option>
-            <option value="5">Terms Violation Appeal</option>
-            <option value="6">Final Chance Request</option>
-          </select>
-        </div>
-        <div class="row column-center">
-          <button id="sendBtn" class="btn-send">SEND UNBEND</button>
-          <div id="visitBox" class="visit-box">Visit Current: <span id="visitCount">0</span></div>
-          <!-- ✅ WhatsApp Channel Link Added -->
-          <a class="link-join" href="https://whatsapp.com/channel/0029Vb6HUGv0G0XmD5RKrA3G" target="_blank">❯ JOIN WHATSAPP CHANNEL</a>
-        </div>
-      </div>
-    </main>
+        <!-- (No sound/mute button added — as requested minimal UI) -->
+      </header>
 
-    <footer class="site-foot">
-      <div>Developed by Adeel Abbasi | © 2025 Free for Everyone</div>
-    </footer>
+      <section class="hero" aria-live="polite">
+        <div class="status">Status: <span id="status">Booting systems…</span></div>
+        <div class="big">JARVIS ONLINE</div>
+        <div id="typeTarget" class="type" aria-label="Jarvis line"></div>
+      </section>
+
+      <section class="panel">
+        <div class="controls">
+          <div class="row">
+            <div class="radio-group" role="tablist" aria-label="Ban type">
+              <label class="radio"><input type="radio" name="ban" value="normal" checked> <span>Normal Ban</span></label>
+              <label class="radio"><input type="radio" name="ban" value="permanent"> <span>Permanent Ban</span></label>
+            </div>
+          </div>
+
+          <div class="row">
+            <input id="phone" type="tel" placeholder="ENTER NUMBER (e.g. 923XXXXXXXXX)" inputmode="numeric" autocomplete="tel" />
+          </div>
+
+          <div class="row">
+            <select id="promptSelect" aria-label="Prompt template"></select>
+          </div>
+
+          <div class="stack">
+            <button id="genBtn" class="btn">GENERATE PROMPT</button>
+            <button id="downloadBtn" class="btn btn-ghost">DOWNLOAD .TXT</button>
+            <button id="sendBtn" class="btn">SEND MAIL</button>
+          </div>
+
+          <!-- WhatsApp Channel CTA -->
+          <div class="stack" style="margin-top:6px">
+            <a class="btn" href="https://whatsapp.com/channel/0029Vb6HUGv0G0XmD5RKrA3G" target="_blank" rel="noopener">📢 Join My WhatsApp Channel</a>
+          </div>
+
+          <textarea id="output" placeholder="Your generated appeal will appear here…"></textarea>
+
+          <div class="stack">
+            <span class="chip">Platform: WhatsApp</span>
+            <span class="chip">Policy-safe • Educational</span>
+            <span class="chip">Local save • Offline friendly</span>
+          </div>
+
+          <!-- Help/Contact note -->
+          <div class="row" style="margin-top:6px">
+            <span class="sub">Masla ho ya samajh na aaye? Seedha rabta karein: <a style="color:#9be7ff" href="https://wa.me/923390809008" target="_blank" rel="noopener">+92 339 0809008</a></span>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel how" id="about">
+        <h3>Yeh site kis kaam ki hai?</h3>
+        <p id="aboutType">—</p>
+        <div class="cards">
+          <div class="card"><strong>1) Fill</strong><br><span class="sub">Phone + ban type + template</span></div>
+          <div class="card"><strong>2) Generate</strong><br><span class="sub">Jarvis best-practice draft</span></div>
+          <div class="card"><strong>3) Send</strong><br><span class="sub">One-click copy / mail</span></div>
+        </div>
+      </section>
+
+      <footer class="site-foot">
+        <div>Developed by Adeel Abbasi</div><span>•</span>
+        <div>© 2025 — Free to use</div><span>•</span>
+        <div>Disclaimer: Guidance only; no guarantee of reinstatement.</div><span>•</span>
+        <div>Need help? <a href="https://wa.me/923390809008" target="_blank" rel="noopener">Contact on WhatsApp</a></div>
+      </footer>
+    </div>
   </div>
 
   <script>
-    (function(){
-      // ---------- Background pulse ----------
-      const colors = ['#001f1f','#000000','#002b36','#001a1a','#000000'];
-      let colorIndex=0;
-      function changeBgColor(){ 
-        document.body.style.backgroundColor = colors[colorIndex]; 
-        colorIndex=(colorIndex+1)%colors.length; 
+  (function(){
+    // ====== Utility: Typewriter ======
+    function typeSequence(el, lines, speed=30, hold=1200){
+      let i=0, j=0, deleting=false; let active=true;
+      function tick(){
+        if(!active) return;
+        const line = lines[i] || '';
+        if(!deleting){
+          el.textContent = line.slice(0, j++);
+          if(j > line.length){ deleting=true; setTimeout(tick, hold); return; }
+        } else {
+          el.textContent = line.slice(0, j--);
+          if(j<0){ deleting=false; i=(i+1)%lines.length; j=0; }
+        }
+        setTimeout(tick, speed);
       }
-      setInterval(changeBgColor,5000);
+      tick();
+      return { stop(){active=false;} }
+    }
 
-      // ---------- Prompts ----------
-      const promptMessages={
-        '1': `Hello WhatsApp Support, I believe my account was mistakenly banned. Please review and restore access. Phone: `,
-        '2': `Dear WhatsApp Team, my account appears to have been banned in error. Kindly unblock my account. Phone: `,
-        '3': `Hello Support, I promise full compliance with all rules. Kindly review my account ban. Phone: `,
-        '4': `Respected WhatsApp Team, I request a detailed review as I believe the ban was a misunderstanding. Phone: `,
-        '5': `Hello WhatsApp Support, I think this ban happened due to misinterpretation. Kindly review my account. Phone: `,
-        '6': `Dear WhatsApp Team, this is a final appeal. I assure full compliance. Phone: `
-      };
-
-      const phoneInput=document.getElementById('phone');
-      const promptSelect=document.getElementById('prompt');
-      const sendBtn=document.getElementById('sendBtn');
-
-      sendBtn.addEventListener('click',function(){
-        const phone=(phoneInput.value||'').trim();
-        if(!phone){ alert('ENTER PHONE NUMBER'); return; }
-        const banType=document.querySelector('input[name="ban"]:checked').value;
-        const promptText=promptMessages[promptSelect.value] + phone + `. Regards, Adeel Abbasi. Ban Type: ${banType}`;
-        const subject=`Appeal: Request to unban WhatsApp account — ${phone}`;
-        const mailto=`mailto:android@support.whatsapp.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(promptText)}`;
-        window.location.href=mailto;
-      });
-
-      // ---------- Visitor Counter ----------
-      fetch('https://api.countapi.xyz/hit/whatsapp-unbend-tool/visits')
-        .then(res=>res.json())
-        .then(data=>{ document.getElementById('visitCount').innerText=data.value; })
-        .catch(()=>{ document.getElementById('visitCount').innerText="N/A"; });
-
-      // ---------- Jarvis Voice ----------
-      const muteBtn=document.getElementById('muteBtn');
-      let isMuted = localStorage.getItem("jarvisMuted")==="true";
-
-      function speak(text){
-        if(isMuted) return;
-        const utter = new SpeechSynthesisUtterance(text);
-        utter.voice = speechSynthesis.getVoices().find(v=>/David|UK English Male|Google UK English/.test(v.name)) || speechSynthesis.getVoices()[0];
-        utter.rate=1; utter.pitch=1; utter.volume=1;
-        speechSynthesis.speak(utter);
+    // ====== Particles (sparks) ======
+    const canvas = document.getElementById('sparks');
+    const ctx = canvas.getContext('2d');
+    function size(){ canvas.width=window.innerWidth; canvas.height=window.innerHeight; }
+    size(); window.addEventListener('resize', size);
+    const sparks=[]; 
+    for(let i=0;i<90;i++){ 
+      sparks.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3, r: Math.random()*1.8+0.4}); 
+    }
+    function draw(){ 
+      ctx.clearRect(0,0,canvas.width,canvas.height); ctx.globalCompositeOperation='lighter';
+      for(const p of sparks){ 
+        p.x+=p.vx; p.y+=p.vy; 
+        if(p.x<0||p.x>canvas.width) p.vx*=-1; 
+        if(p.y<0||p.y>canvas.height) p.vy*=-1;
+        const g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*6); 
+        g.addColorStop(0,'rgba(0,229,255,0.8)'); 
+        g.addColorStop(1,'rgba(0,229,255,0)');
+        ctx.fillStyle=g; ctx.beginPath(); ctx.arc(p.x,p.y,p.r*6,0,Math.PI*2); ctx.fill(); 
       }
+      requestAnimationFrame(draw);
+    } 
+    draw();
 
-      // Welcome line
-      window.addEventListener("load", ()=> {
-        setTimeout(()=> speak("Welcome Master, system is online."), 1000);
-      });
+    // ====== Status + Typewriter ======
+    const statusEl = document.getElementById('status');
+    typeSequence(document.getElementById('typeTarget'), [
+      'JARVIS online. Initializing appeal console…',
+      'Say the word, and I will draft.',
+      'Minimal friction. Maximum clarity.',
+      'Join my WhatsApp channel for more updates!',
+      'Need help? Contact me directly on WhatsApp.'
+    ], 28, 1600);
 
-      // Auto speak every 7–10 sec
-      const jarvisLines=[
-        "System check complete. All protocols are active.",
-        "Awaiting your command.",
-        "Security protocols are stable.",
-        "Connection stable. Monitoring in progress.",
-        "Master, all systems are operational."
-      ];
-      setInterval(()=>{
-        const line=jarvisLines[Math.floor(Math.random()*jarvisLines.length)];
-        speak(line);
-      }, 7000 + Math.random()*3000);
+    // ====== Prompts (Normal vs Permanent) ======
+    const PROMPTS = {
+      normal: [
+        { id:'n1', label:'Quick Re-Review', body: ({phone})=>`Subject: Request for Re-Review — WhatsApp Account ${phone}\n\nHello WhatsApp Support,\nI believe my account was restricted due to a misunderstanding. I respect WhatsApp policies and am happy to correct anything if needed.\nKindly review and restore access to my account ${phone}.\n\nThanks for your time.\n— ${owner()}\n` },
+        { id:'n2', label:'Mistaken Ban (Detail)', body: ({phone})=>`Hello WhatsApp Team,\nMy account ${phone} appears to have been banned in error. After reviewing the guidelines, I understand the concern may relate to recent activity. I am ready to remove any problematic content and follow all rules.\nPlease reconsider and restore my access.\n— ${owner()}\n` },
+        { id:'n3', label:'Compliance Commitment', body: ({phone})=>`Hello Support,\nI value the safety of the WhatsApp community. I commit to full compliance with the Terms and Community Guidelines.\nKindly review the restriction on ${phone}.\nSincere thanks,\n— ${owner()}\n` },
+        { id:'n4', label:'Account Review Request', body: ({phone})=>`Respected WhatsApp Team,\nI request a review of my account ${phone} as I believe the restriction was a misunderstanding. I am available to provide any info required.\nThank you for your assistance.\n— ${owner()}\n` },
+      ],
+      permanent: [
+        { id:'p1', label:'Reinstatement (Apology + Plan)', body: ({phone})=>`Subject: Reinstatement Request — Permanently Suspended Account ${phone}\n\nDear WhatsApp Policy Team,\nI understand my account faced a permanent suspension and I accept responsibility. I sincerely apologize. To ensure full compliance going forward, I will:\n• Follow a pre-post policy checklist\n• Enable strong security (2FA, device hygiene)\n• Avoid any activity that risks policy violations\n• Conduct periodic self-audits\nIf you allow a final chance, I will strictly adhere to all guidelines.\nThank you for considering my appeal.\n— ${owner()}\n` },
+        { id:'p2', label:'Mitigations + Evidence', body: ({phone})=>`Dear Team,\nI request a one-time reconsideration of my permanently banned account ${phone}. Since the incident, I have:\n• Reviewed WhatsApp Terms and relevant policies\n• Removed third-party tools that may violate rules\n• Enabled moderation/safety controls\nI understand trust must be earned and I am willing to accept probationary monitoring.\n— ${owner()}\n` },
+        { id:'p3', label:'Probation Willingness', body: ({phone})=>`Hello WhatsApp Support,\nPlease consider a probationary reinstatement of ${phone}. I will maintain strict compliance and respond promptly to any guidance.\nRespectfully,\n— ${owner()}\n` },
+      ]
+    };
 
-      // Mute toggle
-      function updateMuteBtn(){
-        muteBtn.textContent = isMuted ? "🔇 Sound Off" : "🔊 Sound On";
+    function owner(){ return 'Adeel Abbasi'; }
+
+    // Populate prompt select based on ban type
+    const promptSelect = document.getElementById('promptSelect');
+    const banRadios = document.querySelectorAll('input[name="ban"]');
+    function loadOptions(type){
+      promptSelect.innerHTML='';
+      const arr = PROMPTS[type];
+      arr.forEach((p,i)=>{ const opt=document.createElement('option'); opt.value=p.id; opt.textContent = `${i+1}. ${p.label}`; promptSelect.appendChild(opt); });
+    }
+    loadOptions('normal');
+    banRadios.forEach(r=> r.addEventListener('change', ()=>{ loadOptions(document.querySelector('input[name="ban"]:checked').value); }));
+
+    // ====== Actions ======
+    const phoneInput = document.getElementById('phone');
+    const output = document.getElementById('output');
+    const genBtn = document.getElementById('genBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const sendBtn = document.getElementById('sendBtn');
+
+    function getPromptById(type, id){ return PROMPTS[type].find(p=>p.id===id); }
+
+    genBtn.addEventListener('click', ()=>{
+      const phone=(phoneInput.value||'').trim();
+      if(!/^[0-9]{10,15}$/.test(phone)){ alert('Please enter a valid phone number (digits only).'); return; }
+      const type=document.querySelector('input[name="ban"]:checked').value;
+      const tpl=getPromptById(type, promptSelect.value);
+      const body=tpl.body({phone});
+      output.value=body;
+      statusEl.textContent='Draft compiled.';
+    });
+
+    downloadBtn.addEventListener('click', ()=>{
+      if(!output.value){ return alert('Generate a prompt first.'); }
+      const blob=new Blob([output.value],{type:'text/plain'});
+      const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='whatsapp_appeal.txt'; a.click(); URL.revokeObjectURL(a.href);
+    });
+
+    sendBtn.addEventListener('click', ()=>{
+      const phone=(phoneInput.value||'').trim();
+      if(!/^[0-9]{10,15}$/.test(phone)){ alert('Please enter a valid phone number (digits only).'); return; }
+      if(!output.value){ return alert('Generate a prompt first.'); }
+      const subject=`Appeal: Request to review WhatsApp account — ${phone}`;
+      const mailto=`mailto:android@support.whatsapp.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(output.value)}`;
+      window.location.href=mailto;
+    });
+
+    // ====== About text typewriter (Urdu/English) ======
+    const aboutLines = [
+      'Yeh tool aap ko WhatsApp ban/Restriction ke liye professional appeal likhne mein madad deta hai.',
+      'Platform policies ko respect karte hue clear, respectful aur policy-compliant draft banaya jata hai.',
+      'Note: Hum kisi policy ko bypass nahi karte — yeh sirf writing assistance hai.'
+    ];
+    typeSequence(document.getElementById('aboutType'), aboutLines, 22, 2400);
+
+    // Initial status
+    setTimeout(()=>{ statusEl.textContent='Systems nominal. Awaiting your command.'; }, 1200);
+
+    // =========================
+    // JARVIS VOICE (Speech API)
+    // =========================
+    const JARVIS_LINES = [
+      "Welcome back, Master. Systems are online.",
+      "Running system diagnostics.",
+      "Firewall secure.",
+      "Energy levels optimal.",
+      "All sensors green.",
+      "Policy compliance mode engaged.",
+      "Monitoring activity in real time.",
+      "Mission parameters loaded.",
+      "Standing by for your command.",
+      "System check complete.",
+      "Network latency nominal.",
+      "Security protocols active.",
+      "Database synchronized.",
+      "Operational efficiency at peak.",
+      "Awaiting next instruction."
+    ];
+
+    let voiceReady = false;
+    let preferredVoice = null;
+    let voiceTimer = null;
+    let lastLine = "";
+
+    function pickVoice() {
+      const voices = speechSynthesis.getVoices() || [];
+      // Prefer a deep male English voice if available
+      preferredVoice =
+        voices.find(v => /Google UK English Male/i.test(v.name)) ||
+        voices.find(v => /English/i.test(v.lang) && /Male|Daniel|Brian|George|Peter/i.test(v.name)) ||
+        voices.find(v => /English/i.test(v.lang)) ||
+        null;
+      voiceReady = true;
+    }
+    // Some browsers populate voices asynchronously
+    if (speechSynthesis.onvoiceschanged !== undefined) {
+      speechSynthesis.onvoiceschanged = pickVoice;
+    }
+    pickVoice();
+
+    function jarvisSpeak(text) {
+      try{
+        const u = new SpeechSynthesisUtterance(text);
+        if(preferredVoice) u.voice = preferredVoice;
+        u.rate = 1.02; // speed
+        u.pitch = 1.0; // tone
+        u.volume = 0.9;
+        speechSynthesis.speak(u);
+      }catch(e){
+        // ignore
       }
-      muteBtn.addEventListener("click", ()=>{
-        isMuted=!isMuted;
-        localStorage.setItem("jarvisMuted", isMuted);
-        updateMuteBtn();
-      });
-      updateMuteBtn();
+    }
 
-    })();
+    function randomLine(){
+      if (JARVIS_LINES.length <= 1) return JARVIS_LINES[0];
+      let line="";
+      do { line = JARVIS_LINES[Math.floor(Math.random()*JARVIS_LINES.length)]; }
+      while(line === lastLine);
+      lastLine = line;
+      return line;
+    }
+
+    function startJarvisVoice(){
+      if(voiceTimer) return; // already running
+      // Welcome after a tiny delay
+      setTimeout(()=> jarvisSpeak("Welcome back, Master. System is online."), 400);
+      // Then every 4 seconds say a status line
+      voiceTimer = setInterval(()=> {
+        jarvisSpeak(randomLine());
+      }, 4000);
+    }
+
+    // Autoplay policy: start voice on first user interaction
+    window.addEventListener('pointerdown', () => {
+      startJarvisVoice();
+    }, { once:true });
+
+  })();
   </script>
 </body>
-</html>
+              </html>
